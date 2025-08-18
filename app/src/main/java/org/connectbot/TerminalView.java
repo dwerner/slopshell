@@ -121,6 +121,8 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 	private static final int ACCESSIBILITY_EVENT_THRESHOLD = 1000;
 	private static final String SCREENREADER_INTENT_ACTION = "android.accessibilityservice.AccessibilityService";
 	private static final String SCREENREADER_INTENT_CATEGORY = "android.accessibilityservice.category.FEEDBACK_SPOKEN";
+	
+	private boolean textSelectionEnabled = false;
 
 	public TerminalView(Context context, TerminalBridge bridge, TerminalViewPager pager) {
 		super(context);
@@ -202,6 +204,8 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 		terminalTextViewOverlay = new TerminalTextViewOverlay(context, this);
 		terminalTextViewOverlay.setLayoutParams(
 				new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		// Set initial text selection state (default is disabled)
+		terminalTextViewOverlay.setTextIsSelectable(textSelectionEnabled);
 		addView(terminalTextViewOverlay, 0);
 
 		// Once terminalTextViewOverlay is active, allow it to handle key events instead.
@@ -226,6 +230,35 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 			 */
 			@Override
 			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+				// Check if terminal has mouse reporting enabled for scroll wheel
+				if (bridge.buffer instanceof de.mud.terminal.vt320) {
+					de.mud.terminal.vt320 vt = (de.mud.terminal.vt320) bridge.buffer;
+					if (vt.isMouseReportEnabled()) {
+						// Convert touch coordinates to terminal character coordinates
+						int col = (int) Math.floor(e2.getX() / bridge.charWidth);
+						int row = (int) Math.floor(e2.getY() / bridge.charHeight);
+						
+						// Send scroll wheel events based on vertical movement
+						// Small movements trigger individual scroll events
+						totalY += distanceY;
+						int scrollThreshold = bridge.charHeight / 2; // Half a character height
+						
+						while (Math.abs(totalY) >= scrollThreshold) {
+							if (totalY > 0) {
+								// Finger moving up = scroll up (natural scrolling)
+								vt.mouseWheel(false, col, row, false, false, false);
+								totalY -= scrollThreshold;
+							} else {
+								// Finger moving down = scroll down (natural scrolling)
+								vt.mouseWheel(true, col, row, false, false, false);
+								totalY += scrollThreshold;
+							}
+						}
+						return true;
+					}
+				}
+				
+				// Original scroll behavior when mouse reporting is disabled
 				// activate consider if within x tolerance
 				int touchSlop =
 						ViewConfiguration.get(TerminalView.this.context).getScaledTouchSlop();
@@ -264,8 +297,47 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 
 			@Override
 			public boolean onSingleTapConfirmed(MotionEvent e) {
+				// Check if terminal has mouse reporting enabled
+				if (bridge.buffer instanceof de.mud.terminal.vt320) {
+					de.mud.terminal.vt320 vt = (de.mud.terminal.vt320) bridge.buffer;
+					if (vt.isMouseReportEnabled()) {
+						// Convert touch coordinates to terminal character coordinates
+						int col = (int) Math.floor(e.getX() / bridge.charWidth);
+						int row = (int) Math.floor(e.getY() / bridge.charHeight);
+						
+						// Send mouse press event (left button)
+						vt.mousePressed(col, row, 16); // 16 = left button modifier
+						// Send mouse release event
+						vt.mouseReleased(col, row);
+						return true;
+					}
+				}
+				
 				viewPager.performClick();
 				return super.onSingleTapConfirmed(e);
+			}
+			
+			@Override
+			public void onLongPress(MotionEvent e) {
+				// Check if terminal has mouse reporting enabled
+				if (bridge.buffer instanceof de.mud.terminal.vt320) {
+					de.mud.terminal.vt320 vt = (de.mud.terminal.vt320) bridge.buffer;
+					if (vt.isMouseReportEnabled()) {
+						// Convert touch coordinates to terminal character coordinates
+						int col = (int) Math.floor(e.getX() / bridge.charWidth);
+						int row = (int) Math.floor(e.getY() / bridge.charHeight);
+						
+						// Send mouse press event (right button)
+						vt.mousePressed(col, row, 4); // 4 = right button modifier
+						// Send mouse release event
+						vt.mouseReleased(col, row);
+						
+						// Provide haptic feedback
+						bridge.tryKeyVibrate();
+						return;
+					}
+				}
+				super.onLongPress(e);
 			}
 		});
 
@@ -280,6 +352,19 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 	public void copyCurrentSelectionToClipboard() {
 		if (terminalTextViewOverlay != null) {
 			terminalTextViewOverlay.copyCurrentSelectionToClipboard();
+		}
+	}
+	
+	public void setTextSelectionEnabled(boolean enabled) {
+		textSelectionEnabled = enabled;
+		// Control the overlay's text selection capability
+		if (terminalTextViewOverlay != null) {
+			terminalTextViewOverlay.setTextIsSelectable(enabled);
+		}
+		// If disabling, clear any current selection
+		if (!enabled && bridge != null && bridge.isSelectingForCopy()) {
+			bridge.setSelectingForCopy(false);
+			bridge.redraw();
 		}
 	}
 
@@ -540,11 +625,11 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 			EditorInfo.IME_FLAG_NO_EXTRACT_UI |
 			EditorInfo.IME_FLAG_NO_ENTER_ACTION |
 			EditorInfo.IME_ACTION_NONE;
-		// Turn off suggestions
-		outAttrs.inputType = EditorInfo.TYPE_NULL |
-				EditorInfo.TYPE_TEXT_VARIATION_PASSWORD |
-				EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD |
+		// Enable voice input while preventing word buffering
+		// Use TYPE_CLASS_TEXT for voice support with NO_SUGGESTIONS to prevent autocomplete
+		outAttrs.inputType = EditorInfo.TYPE_CLASS_TEXT |
 				EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+		// Use false to avoid text composition issues
 		return new BaseInputConnection(this, false) {
 			@Override
 			public boolean deleteSurroundingText (int leftLength, int rightLength) {

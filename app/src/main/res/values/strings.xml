@@ -20,8 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools"
 	xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-	<!-- Summary of what ConnectBot is; used as a short description in the Android running apps list -->
-	<string name="app_desc">"Simple, powerful, open-source SSH client."</string>
+	<!-- Summary of what SlopShell is; used as a short description in the Android running apps list -->
+	<string name="app_desc">"Tongue-in-cheek SSH client based on ConnectBot."</string>
 
 	<!-- Summary of what the ConnectBot service does; displayed in the Android running apps list -->
 	<string name="service_desc">"Maintains SSH connections and loaded pubkeys"</string>
@@ -405,6 +405,10 @@
 	<string name="console_menu_resize">"Force Size"</string>
 	<!-- Button that brings up the list of URLs on the current screen -->
 	<string name="console_menu_urlscan">"URL Scan"</string>
+	<!-- Toggle text selection mode in terminal -->
+	<string name="console_menu_text_selection">"Text Selection Mode"</string>
+	<!-- Toggle screen rotation mode -->
+	<string name="console_menu_rotation">"Screen Rotation"</string>
 
 	<!-- Button label to answer "Yes" to a yes/no prompt -->
 	<string name="button_yes">"Yes"</string>

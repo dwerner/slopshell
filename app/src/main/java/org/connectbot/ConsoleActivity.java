@@ -87,6 +87,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.mud.terminal.vt320;
 
 public class ConsoleActivity extends AppCompatActivity implements BridgeDisconnectedListener {
@@ -138,6 +139,8 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 	private MenuItem portForward;
 	private MenuItem resize;
 	private MenuItem urlscan;
+	private MenuItem textSelection;
+	private MenuItem rotation;
 
 	private boolean forcedOrientation;
 
@@ -765,11 +768,8 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 	 *
 	 */
 	private void configureOrientation() {
-		String rotateDefault;
-		if (getResources().getConfiguration().keyboard == Configuration.KEYBOARD_NOKEYS)
-			rotateDefault = PreferenceConstants.ROTATION_PORTRAIT;
-		else
-			rotateDefault = PreferenceConstants.ROTATION_LANDSCAPE;
+		// Default to allowing rotation (unspecified) instead of forcing portrait/landscape
+		String rotateDefault = PreferenceConstants.ROTATION_DEFAULT;
 
 		String rotate = prefs.getString(PreferenceConstants.ROTATION, rotateDefault);
 		if (PreferenceConstants.ROTATION_DEFAULT.equals(rotate))
@@ -922,6 +922,84 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 							}
 						}).setNegativeButton(android.R.string.cancel, null).create().show();
 
+				return true;
+			}
+		});
+
+		textSelection = menu.add(R.string.console_menu_text_selection);
+		if (hardKeyboard)
+			textSelection.setAlphabeticShortcut('t');
+		textSelection.setIcon(android.R.drawable.ic_menu_edit);
+		textSelection.setCheckable(true);
+		// Default is disabled (false)
+		boolean textSelectionEnabled = prefs.getBoolean(PreferenceConstants.TEXT_SELECTION_MODE, false);
+		textSelection.setChecked(textSelectionEnabled);
+		textSelection.setEnabled(activeTerminal);
+		textSelection.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				// Toggle the preference
+				boolean newState = !item.isChecked();
+				item.setChecked(newState);
+				
+				// Save preference
+				SharedPreferences.Editor editor = prefs.edit();
+				editor.putBoolean(PreferenceConstants.TEXT_SELECTION_MODE, newState);
+				editor.apply();
+				
+				// Apply to current terminal view
+				TerminalView terminalView = adapter.getCurrentTerminalView();
+				if (terminalView != null) {
+					terminalView.setTextSelectionEnabled(newState);
+				}
+				
+				return true;
+			}
+		});
+
+		rotation = menu.add(R.string.console_menu_rotation);
+		if (hardKeyboard)
+			rotation.setAlphabeticShortcut('r');
+		rotation.setIcon(android.R.drawable.ic_menu_rotate);
+		rotation.setEnabled(true);
+		rotation.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				// Cycle through rotation modes: Default -> Landscape -> Portrait -> Default
+				String currentRotation = prefs.getString(PreferenceConstants.ROTATION, PreferenceConstants.ROTATION_DEFAULT);
+				String newRotation;
+				
+				if (PreferenceConstants.ROTATION_DEFAULT.equals(currentRotation)) {
+					newRotation = PreferenceConstants.ROTATION_LANDSCAPE;
+				} else if (PreferenceConstants.ROTATION_LANDSCAPE.equals(currentRotation)) {
+					newRotation = PreferenceConstants.ROTATION_PORTRAIT;
+				} else {
+					newRotation = PreferenceConstants.ROTATION_DEFAULT;
+				}
+				
+				// Save preference
+				SharedPreferences.Editor editor = prefs.edit();
+				editor.putString(PreferenceConstants.ROTATION, newRotation);
+				editor.apply();
+				
+				// Apply immediately
+				if (PreferenceConstants.ROTATION_LANDSCAPE.equals(newRotation)) {
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+					forcedOrientation = true;
+				} else if (PreferenceConstants.ROTATION_PORTRAIT.equals(newRotation)) {
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+					forcedOrientation = true;
+				} else {
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+					forcedOrientation = false;
+				}
+				
+				// Show toast with current mode
+				String message = "Rotation: " + 
+					(PreferenceConstants.ROTATION_DEFAULT.equals(newRotation) ? "Auto" :
+					 PreferenceConstants.ROTATION_LANDSCAPE.equals(newRotation) ? "Landscape" : "Portrait");
+				Toast.makeText(ConsoleActivity.this, message, Toast.LENGTH_SHORT).show();
+				
 				return true;
 			}
 		});
@@ -1263,6 +1341,9 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 			// and add our terminal view control, using index to place behind overlay
 			final TerminalView terminal = new TerminalView(container.getContext(), bridge, pager);
 			terminal.setId(R.id.terminal_view);
+			// Initialize text selection mode from preference
+			boolean textSelectionEnabled = prefs.getBoolean(PreferenceConstants.TEXT_SELECTION_MODE, false);
+			terminal.setTextSelectionEnabled(textSelectionEnabled);
 			view.addView(terminal, 0);
 
 			// Tag the view with its bridge so it can be retrieved later.
