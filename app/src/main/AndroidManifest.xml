@@ -85,7 +85,7 @@
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="io.slopshell.HostListActivity"/>
 		</activity>
 
 		<activity
@@ -95,7 +95,7 @@
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.PubkeyListActivity"/>
+				android:value="io.slopshell.PubkeyListActivity"/>
 		</activity>
 
 		<activity
@@ -104,7 +104,7 @@
 
 			<meta-data
 					android:name="android.support.PARENT_ACTIVITY"
-					android:value="org.connectbot.HostListActivity"/>
+					android:value="io.slopshell.HostListActivity"/>
 		</activity>
 
 		<activity
@@ -114,7 +114,7 @@
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="io.slopshell.HostListActivity"/>
 		</activity>
 
 		<activity
@@ -124,7 +124,7 @@
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="io.slopshell.HostListActivity"/>
 		</activity>
 
 		<activity
@@ -134,7 +134,7 @@
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="io.slopshell.HostListActivity"/>
 		</activity>
 
 		<activity
@@ -144,7 +144,7 @@
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="io.slopshell.HostListActivity"/>
 		</activity>
 
 		<activity
@@ -154,7 +154,7 @@
 			android:theme="@style/AppTheme.NoActionBar">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="io.slopshell.HostListActivity"/>
 		</activity>
 
 		<activity
@@ -164,7 +164,7 @@
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HelpActivity"/>
+				android:value="io.slopshell.HelpActivity"/>
 		</activity>
 
 		<activity
@@ -173,11 +173,11 @@
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HelpActivity"/>
+				android:value="io.slopshell.HelpActivity"/>
 		</activity>
 
 		<service
-			android:name="org.connectbot.service.TerminalManager"
+			android:name="io.slopshell.service.TerminalManager"
 			android:configChanges="keyboardHidden|orientation"
 			android:description="@string/service_desc"
 			android:foregroundServiceType="remoteMessaging"/>

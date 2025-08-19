@@ -34,7 +34,7 @@
 		android:text="@string/pubkey_touch_hint"
 		android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-	<org.connectbot.util.EntropyView
+	<io.slopshell.util.EntropyView
 		android:id="@+id/entropy"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"

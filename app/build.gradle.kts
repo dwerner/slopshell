@@ -36,7 +36,7 @@ androidGitVersion {
 }
 
 android {
-    namespace = "org.connectbot"
+    namespace = "io.slopshell"
     compileSdk = 34
     
     // Set JVM target for Kotlin
@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "org.connectbot"
+        applicationId = "io.slopshell"
         versionName = androidGitVersion.name()
         versionCode = androidGitVersion.code()
 

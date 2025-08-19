@@ -192,7 +192,7 @@
 			android:defaultValue="true"
 			/>
 
-		<org.connectbot.util.VolumePreference
+		<io.slopshell.util.VolumePreference
 			android:key="bellVolume"
 			android:title="@string/pref_bell_volume_title"
 			android:dialogLayout="@layout/volume_preference_dialog_layout"

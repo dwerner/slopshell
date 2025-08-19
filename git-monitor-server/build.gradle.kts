@@ -5,7 +5,7 @@ plugins {
     application
 }
 
-group = "org.connectbot.gitmonitor"
+group = "io.slopshell.gitmonitor"
 version = "1.0.0"
 
 repositories {
@@ -48,12 +48,12 @@ java {
 }
 
 application {
-    mainClass.set("org.connectbot.gitmonitor.GitMonitorServerKt")
+    mainClass.set("io.slopshell.gitmonitor.GitMonitorServerKt")
 }
 
 tasks.jar {
     manifest {
-        attributes["Main-Class"] = "org.connectbot.gitmonitor.GitMonitorServerKt"
+        attributes["Main-Class"] = "io.slopshell.gitmonitor.GitMonitorServerKt"
     }
     // Create fat JAR
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
@@ -63,7 +63,7 @@ tasks.jar {
 // Task to run the server
 tasks.register<JavaExec>("runServer") {
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("org.connectbot.gitmonitor.GitMonitorServerKt")
+    mainClass.set("io.slopshell.gitmonitor.GitMonitorServerKt")
     
     // Pass through command line arguments
     args = listOf("--port", "8080", "--repo", ".")
