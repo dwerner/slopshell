@@ -18,15 +18,89 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+	<!-- Base theme - Green (default) -->
 	<style name="AppTheme" parent="Theme.AppCompat">
 		<item name="colorPrimary">@color/primary</item>
 		<item name="colorPrimaryDark">@color/dark_primary</item>
 		<item name="colorAccent">@color/accent</item>
 		<item name="alertDialogTheme">@style/AlertDialogTheme</item>
 	</style>
+	
+	<style name="AppTheme.NoActionBar">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
+	
+	<!-- Red Theme -->
+	<style name="AppTheme.Red" parent="Theme.AppCompat">
+		<item name="colorPrimary">@color/primary_red</item>
+		<item name="colorPrimaryDark">@color/dark_primary_red</item>
+		<item name="colorAccent">@color/accent_red</item>
+		<item name="alertDialogTheme">@style/AlertDialogTheme.Red</item>
+	</style>
+	
+	<style name="AppTheme.Red.NoActionBar">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
+	
+	<!-- Blue Theme -->
+	<style name="AppTheme.Blue" parent="Theme.AppCompat">
+		<item name="colorPrimary">@color/primary_blue</item>
+		<item name="colorPrimaryDark">@color/dark_primary_blue</item>
+		<item name="colorAccent">@color/accent_blue</item>
+		<item name="alertDialogTheme">@style/AlertDialogTheme.Blue</item>
+	</style>
+	
+	<style name="AppTheme.Blue.NoActionBar">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
+	
+	<!-- Purple Theme -->
+	<style name="AppTheme.Purple" parent="Theme.AppCompat">
+		<item name="colorPrimary">@color/primary_purple</item>
+		<item name="colorPrimaryDark">@color/dark_primary_purple</item>
+		<item name="colorAccent">@color/accent_purple</item>
+		<item name="alertDialogTheme">@style/AlertDialogTheme.Purple</item>
+	</style>
+	
+	<style name="AppTheme.Purple.NoActionBar">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
+	
+	<!-- Orange Theme -->
+	<style name="AppTheme.Orange" parent="Theme.AppCompat">
+		<item name="colorPrimary">@color/primary_orange</item>
+		<item name="colorPrimaryDark">@color/dark_primary_orange</item>
+		<item name="colorAccent">@color/accent_orange</item>
+		<item name="alertDialogTheme">@style/AlertDialogTheme.Orange</item>
+	</style>
+	
+	<style name="AppTheme.Orange.NoActionBar">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
 
 	<style name="AlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
 		<item name="colorAccent">@color/accent</item>
+	</style>
+	
+	<style name="AlertDialogTheme.Red" parent="Theme.AppCompat.Dialog.Alert">
+		<item name="colorAccent">@color/accent_red</item>
+	</style>
+	
+	<style name="AlertDialogTheme.Blue" parent="Theme.AppCompat.Dialog.Alert">
+		<item name="colorAccent">@color/accent_blue</item>
+	</style>
+	
+	<style name="AlertDialogTheme.Purple" parent="Theme.AppCompat.Dialog.Alert">
+		<item name="colorAccent">@color/accent_purple</item>
+	</style>
+	
+	<style name="AlertDialogTheme.Orange" parent="Theme.AppCompat.Dialog.Alert">
+		<item name="colorAccent">@color/accent_orange</item>
 	</style>
 
 	<style name="KeyboardKey">
@@ -36,8 +110,21 @@
 		<item name="android:padding">0dp</item>
 		<item name="android:textSize">10sp</item>
 	</style>
+	
+	<!-- Compact keyboard for voice input mode -->
+	<style name="KeyboardKeyCompact">
+		<item name="android:layout_width">50dip</item>
+		<item name="android:layout_height">35dip</item>
+		<item name="android:layout_margin">1dp</item>
+		<item name="android:padding">2dp</item>
+		<item name="android:textSize">11sp</item>
+	</style>
 
 	<style name="KeyboardButton" parent="KeyboardKey">
+		<item name="android:background">@drawable/keyboard_button_selector</item>
+	</style>
+	
+	<style name="KeyboardButtonCompact" parent="KeyboardKeyCompact">
 		<item name="android:background">@drawable/keyboard_button_selector</item>
 	</style>
 

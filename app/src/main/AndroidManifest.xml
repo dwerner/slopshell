@@ -147,6 +147,16 @@
 		</activity>
 
 		<activity
+			android:name=".GitMonitorActivity"
+			android:configChanges="keyboardHidden|orientation"
+			android:label="Git Monitor"
+			android:theme="@style/AppTheme.NoActionBar">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="org.connectbot.HostListActivity"/>
+		</activity>
+
+		<activity
 			android:name=".EulaActivity"
 			android:configChanges="keyboardHidden|orientation"
 			android:label="@string/terms_and_conditions">

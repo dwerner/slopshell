@@ -144,6 +144,11 @@
 
 	</RelativeLayout>
 
-	<include layout="@layout/inc_keyboard" />
+	<!-- Keyboard will be dynamically loaded based on preference -->
+	<ViewStub
+		android:id="@+id/keyboard_stub"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

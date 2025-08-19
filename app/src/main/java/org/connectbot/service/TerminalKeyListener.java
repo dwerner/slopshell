@@ -527,6 +527,36 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 		}
 	}
 
+	public void sendShiftTab() {
+		try {
+			// Send the escape sequence for Shift+Tab (CSI Z)
+			bridge.transport.write(new byte[] { 0x1B, '[', 'Z' });
+		} catch (IOException e) {
+			Log.e(TAG, "Problem while trying to send SHIFT+TAB press.", e);
+			try {
+				bridge.transport.flush();
+			} catch (IOException ioe) {
+				Log.d(TAG, "Our transport was closed, dispatching disconnect event");
+				bridge.dispatchDisconnect(false);
+			}
+		}
+	}
+
+	public void sendCtrlR() {
+		try {
+			// Send Ctrl+R (ASCII 18)
+			bridge.transport.write(0x12);
+		} catch (IOException e) {
+			Log.e(TAG, "Problem while trying to send CTRL+R press.", e);
+			try {
+				bridge.transport.flush();
+			} catch (IOException ioe) {
+				Log.d(TAG, "Our transport was closed, dispatching disconnect event");
+				bridge.dispatchDisconnect(false);
+			}
+		}
+	}
+
 	public void sendPressedKey(int key) {
 		((vt320) buffer).keyPressed(key, ' ', getStateForBuffer());
 	}

@@ -124,6 +124,13 @@
 		<SwitchPreferenceCompat
 			android:key="alwaysvisible"
 			android:title="@string/pref_alwaysvisible_title"
+			android:defaultValue="true"
+			/>
+		
+		<SwitchPreferenceCompat
+			android:key="compactkeyboard"
+			android:title="Compact Keyboard"
+			android:summary="Use smaller special keys (useful for voice input)"
 			android:defaultValue="false"
 			/>
 

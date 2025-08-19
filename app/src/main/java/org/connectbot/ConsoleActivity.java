@@ -68,6 +68,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.ViewStub;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -90,7 +91,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.mud.terminal.vt320;
 
-public class ConsoleActivity extends AppCompatActivity implements BridgeDisconnectedListener {
+public class ConsoleActivity extends ThemedActivity implements BridgeDisconnectedListener {
 	public final static String TAG = "CB.ConsoleActivity";
 
 	protected static final int REQUEST_EDIT = 1;
@@ -309,6 +310,12 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 			hideKeys = true;
 		} else if (id == R.id.button_esc) {
 			handler.sendEscape();
+			hideKeys = true;
+		} else if (id == R.id.button_mode) {
+			handler.sendShiftTab();
+			hideKeys = true;
+		} else if (id == R.id.button_ctrlr) {
+			handler.sendCtrlR();
 			hideKeys = true;
 		} else if (id == R.id.button_tab) {
 			handler.sendTab();
@@ -572,6 +579,16 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 		keyboard_fade_in = AnimationUtils.loadAnimation(this, R.anim.keyboard_fade_in);
 		keyboard_fade_out = AnimationUtils.loadAnimation(this, R.anim.keyboard_fade_out);
 
+		// Dynamically load the correct keyboard layout based on preference
+		ViewStub keyboardStub = findViewById(R.id.keyboard_stub);
+		boolean useCompactKeyboard = prefs.getBoolean(PreferenceConstants.COMPACT_KEYBOARD, false);
+		if (useCompactKeyboard) {
+			keyboardStub.setLayoutResource(R.layout.inc_keyboard_compact);
+		} else {
+			keyboardStub.setLayoutResource(R.layout.inc_keyboard);
+		}
+		keyboardStub.inflate();
+
 		keyboardGroup = findViewById(R.id.keyboard_group);
 
 		keyboardAlwaysVisible = prefs.getBoolean(PreferenceConstants.KEY_ALWAYS_VISIBLE, false);
@@ -613,6 +630,18 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 		findViewById(R.id.button_ctrl).setOnClickListener(emulatedKeysListener);
 		findViewById(R.id.button_esc).setOnClickListener(emulatedKeysListener);
 		findViewById(R.id.button_tab).setOnClickListener(emulatedKeysListener);
+		
+		// Add Mode button listener if it exists
+		View modeButton = findViewById(R.id.button_mode);
+		if (modeButton != null) {
+			modeButton.setOnClickListener(emulatedKeysListener);
+		}
+		
+		// Add Ctrl+R button listener if it exists
+		View ctrlRButton = findViewById(R.id.button_ctrlr);
+		if (ctrlRButton != null) {
+			ctrlRButton.setOnClickListener(emulatedKeysListener);
+		}
 
 		addKeyRepeater(findViewById(R.id.button_up));
 		addKeyRepeater(findViewById(R.id.button_up));
@@ -620,22 +649,39 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 		addKeyRepeater(findViewById(R.id.button_left));
 		addKeyRepeater(findViewById(R.id.button_right));
 
-		findViewById(R.id.button_home).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_end).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_pgup).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_pgdn).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f1).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f2).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f3).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f4).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f5).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f6).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f7).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f8).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f9).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f10).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f11).setOnClickListener(emulatedKeysListener);
-		findViewById(R.id.button_f12).setOnClickListener(emulatedKeysListener);
+		// Set up button listeners - check for null since some buttons may not exist in compact layout
+		View button = findViewById(R.id.button_home);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_end);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_pgup);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_pgdn);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f1);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f2);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f3);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f4);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f5);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f6);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f7);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f8);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f9);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f10);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f11);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
+		button = findViewById(R.id.button_f12);
+		if (button != null) button.setOnClickListener(emulatedKeysListener);
 
 
 		actionBar = getSupportActionBar();
@@ -662,20 +708,31 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 			keyboardScroll.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					final int xscroll = findViewById(R.id.button_f12).getRight();
-					if (BuildConfig.DEBUG) {
-						Log.d(TAG, "smoothScrollBy(toEnd[" + xscroll + "])");
+					// Find the last button to scroll to (different for compact vs full keyboard)
+					View lastButton = findViewById(R.id.button_f12);
+					if (lastButton == null) {
+						// In compact mode, find the last button that exists
+						lastButton = findViewById(R.id.button_home);
 					}
-					keyboardScroll.smoothScrollBy(xscroll, 0);
-					keyboardScroll.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							if (BuildConfig.DEBUG) {
-								Log.d(TAG, "smoothScrollBy(toStart[" + -xscroll + "])");
-							}
-							keyboardScroll.smoothScrollBy(-xscroll, 0);
+					if (lastButton != null) {
+						final int xscroll = lastButton.getRight();
+						if (BuildConfig.DEBUG) {
+							Log.d(TAG, "smoothScrollBy(toEnd[" + xscroll + "])");
 						}
-					}, 500);
+						keyboardScroll.smoothScrollBy(xscroll, 0);
+						
+						// Store xscroll in a final variable for the nested runnable
+						final int scrollBack = -xscroll;
+						keyboardScroll.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if (BuildConfig.DEBUG) {
+									Log.d(TAG, "smoothScrollBy(toStart[" + scrollBack + "])");
+								}
+								keyboardScroll.smoothScrollBy(scrollBack, 0);
+							}
+						}, 500);
+					}
 				}
 			}, 500);
 		}
@@ -1004,6 +1061,17 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 			}
 		});
 
+		// Add theme switching menu item
+		MenuItem themeItem = menu.add("Switch Theme");
+		themeItem.setIcon(android.R.drawable.ic_menu_gallery);
+		themeItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				showThemeDialog();
+				return true;
+			}
+		});
+
 		return true;
 	}
 
@@ -1094,6 +1162,14 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 
 		if (forcedOrientation && bound != null) {
 			bound.setResizeAllowed(true);
+		}
+		
+		// Request focus on current terminal view to ensure input works immediately
+		if (adapter != null) {
+			TerminalView terminal = adapter.getCurrentTerminalView();
+			if (terminal != null) {
+				terminal.requestFocus();
+			}
 		}
 	}
 
@@ -1312,6 +1388,32 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 		bridge.injectString(clip);
 	}
 
+	private void showThemeDialog() {
+		String[] themes = {"Green", "Red", "Blue", "Purple", "Orange"};
+		String[] themeValues = {"green", "red", "blue", "purple", "orange"};
+		
+		// Get current theme
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		String currentTheme = prefs.getString(PreferenceConstants.APP_THEME, "green");
+		int currentIndex = 0;
+		for (int i = 0; i < themeValues.length; i++) {
+			if (themeValues[i].equals(currentTheme)) {
+				currentIndex = i;
+				break;
+			}
+		}
+		
+		new androidx.appcompat.app.AlertDialog.Builder(this)
+			.setTitle("Choose Theme")
+			.setSingleChoiceItems(themes, currentIndex, (dialog, which) -> {
+				String selectedTheme = themeValues[which];
+				switchTheme(selectedTheme);
+				dialog.dismiss();
+			})
+			.setNegativeButton(android.R.string.cancel, null)
+			.show();
+	}
+
 	public class TerminalPagerAdapter extends PagerAdapter {
 		@Override
 		public int getCount() {
@@ -1345,6 +1447,9 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 			boolean textSelectionEnabled = prefs.getBoolean(PreferenceConstants.TEXT_SELECTION_MODE, false);
 			terminal.setTextSelectionEnabled(textSelectionEnabled);
 			view.addView(terminal, 0);
+			
+			// Request focus immediately to avoid needing a key press to activate
+			terminal.requestFocus();
 
 			// Tag the view with its bridge so it can be retrieved later.
 			view.setTag(bridge);

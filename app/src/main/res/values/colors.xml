@@ -23,10 +23,34 @@
 	<color name="key_separator">#00000000</color>
 	<color name="keyboard_background">#55b0b0f0</color>
 
-	<color name="primary">#03A9F4</color>
-	<color name="dark_primary">#0288D1</color>
-
-	<color name="accent">#40C4FF</color>
-	<color name="dark_accent">#00B0FF</color>
+	<!-- Default/Green Theme -->
+	<color name="primary">#4CAF50</color>
+	<color name="dark_primary">#388E3C</color>
+	<color name="accent">#66BB6A</color>
+	<color name="dark_accent">#43A047</color>
+	
+	<!-- Red Theme -->
+	<color name="primary_red">#F44336</color>
+	<color name="dark_primary_red">#D32F2F</color>
+	<color name="accent_red">#FF5252</color>
+	<color name="dark_accent_red">#E53935</color>
+	
+	<!-- Blue Theme -->
+	<color name="primary_blue">#2196F3</color>
+	<color name="dark_primary_blue">#1976D2</color>
+	<color name="accent_blue">#448AFF</color>
+	<color name="dark_accent_blue">#2962FF</color>
+	
+	<!-- Purple Theme -->
+	<color name="primary_purple">#9C27B0</color>
+	<color name="dark_primary_purple">#7B1FA2</color>
+	<color name="accent_purple">#E040FB</color>
+	<color name="dark_accent_purple">#AA00FF</color>
+	
+	<!-- Orange Theme -->
+	<color name="primary_orange">#FF9800</color>
+	<color name="dark_primary_orange">#F57C00</color>
+	<color name="accent_orange">#FFAB40</color>
+	<color name="dark_accent_orange">#FF6D00</color>
 
 </resources>

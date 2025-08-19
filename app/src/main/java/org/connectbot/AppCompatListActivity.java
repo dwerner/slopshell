@@ -23,11 +23,10 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-public abstract class AppCompatListActivity extends AppCompatActivity {
+public abstract class AppCompatListActivity extends ThemedActivity {
 	protected ItemAdapter mAdapter;
 
 	protected View mEmptyView;

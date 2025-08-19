@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Compact keyboard layout for voice input mode
+  ~ Smaller keys to take up less screen space
+  -->
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/keyboard_group"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_alignParentBottom="true"
+	android:background="@color/key_background_layout"
+	android:orientation="horizontal"
+	android:padding="0dip"
+	android:visibility="gone">
+
+	<HorizontalScrollView
+		android:id="@+id/keyboard_hscroll"
+		android:layout_width="0dp"
+		android:layout_height="match_parent"
+		android:layout_weight="1"
+		android:padding="0dp"
+		android:scrollbars="none"
+		android:overScrollMode="never">
+
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:orientation="horizontal"
+			android:padding="0dp">
+
+			<!-- Essential keys in user's preferred order -->
+			<Button
+				android:id="@+id/button_esc"
+				style="@style/KeyboardButtonCompact"
+				android:contentDescription="@string/image_description_send_escape_character"
+				android:text="@string/button_key_esc" />
+
+			<Button
+				android:id="@+id/button_mode"
+				style="@style/KeyboardButtonCompact"
+				android:contentDescription="Send Shift+Tab (Mode switch)"
+				android:text="Mode" />
+
+			<Button
+				android:id="@+id/button_ctrlr"
+				style="@style/KeyboardButtonCompact"
+				android:contentDescription="Send Ctrl+R (Claude shortcut)"
+				android:text="^R" />
+
+			<ImageView
+				android:id="@+id/button_tab"
+				style="@style/KeyboardButtonCompact"
+				android:padding="3dp"
+				android:contentDescription="@string/image_description_send_tab_character"
+				app:srcCompat="@drawable/ic_keyboard_tab" />
+
+			<ImageView
+				android:id="@+id/button_up"
+				style="@style/KeyboardButtonCompact"
+				android:padding="3dp"
+				android:contentDescription="@string/image_description_up"
+				app:srcCompat="@drawable/ic_keyboard_arrow_up" />
+
+			<ImageView
+				android:id="@+id/button_down"
+				style="@style/KeyboardButtonCompact"
+				android:padding="3dp"
+				android:contentDescription="@string/image_description_down"
+				app:srcCompat="@drawable/ic_keyboard_arrow_down" />
+
+			<ImageView
+				android:id="@+id/button_left"
+				style="@style/KeyboardButtonCompact"
+				android:padding="3dp"
+				android:contentDescription="@string/image_description_left"
+				app:srcCompat="@drawable/ic_keyboard_arrow_left" />
+
+			<ImageView
+				android:id="@+id/button_right"
+				style="@style/KeyboardButtonCompact"
+				android:padding="3dp"
+				android:contentDescription="@string/image_description_right"
+				app:srcCompat="@drawable/ic_keyboard_arrow_right" />
+
+			<Button
+				android:id="@+id/button_ctrl"
+				style="@style/KeyboardButtonCompact"
+				android:contentDescription="@string/image_description_toggle_control_character"
+				android:text="@string/button_key_ctrl" />
+
+			<Button
+				android:id="@+id/button_end"
+				style="@style/KeyboardButtonCompact"
+				android:text="@string/button_key_end" />
+
+			<Button
+				android:id="@+id/button_home"
+				style="@style/KeyboardButtonCompact"
+				android:text="@string/button_key_home" />
+				
+		</LinearLayout>
+	</HorizontalScrollView>
+
+	<ImageView
+		android:id="@+id/button_keyboard"
+		style="@style/KeyboardKeyCompact"
+		android:background="@drawable/keyboard_keyboard_border"
+		android:contentDescription="@string/image_description_show_keyboard"
+		app:srcCompat="@drawable/ic_keyboard" />
+</LinearLayout>

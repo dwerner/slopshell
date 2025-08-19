@@ -340,6 +340,10 @@ public class HostListActivity extends AppCompatListActivity implements OnHostSta
 		colors.setIcon(android.R.drawable.ic_menu_slideshow);
 		colors.setIntent(new Intent(HostListActivity.this, ColorsActivity.class));
 
+		MenuItem gitMonitor = menu.add("Git Monitor");
+		gitMonitor.setIcon(android.R.drawable.ic_menu_recent_history);
+		gitMonitor.setIntent(new Intent(HostListActivity.this, GitMonitorActivity.class));
+
 		disconnectall = menu.add(R.string.list_menu_disconnect);
 		disconnectall.setIcon(android.R.drawable.ic_menu_delete);
 		disconnectall.setOnMenuItemClickListener(new OnMenuItemClickListener() {

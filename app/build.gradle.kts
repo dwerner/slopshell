@@ -9,7 +9,8 @@ buildscript {
 }
 
 plugins {
-    id("com.android.application") version "8.1.4"
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
     id("com.github.ben-manes.versions") version "0.51.0"
     id("net.ltgt.errorprone") version "4.2.0"
     id("com.gladed.androidgitversion") version "0.4.14"
@@ -37,6 +38,11 @@ androidGitVersion {
 android {
     namespace = "org.connectbot"
     compileSdk = 34
+    
+    // Set JVM target for Kotlin
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 
     defaultConfig {
         applicationId = "org.connectbot"
@@ -127,19 +133,9 @@ android {
         }
     }
 
-    flavorDimensions += listOf("license", "variant")
+    flavorDimensions += listOf("variant")
 
     productFlavors {
-        create("oss") {
-            dimension = "license"
-            versionNameSuffix = "-oss"
-        }
-
-        create("google") {
-            dimension = "license"
-            versionNameSuffix = ""
-        }
-        
         // A/B variants for safe updates without disconnection
         create("versionA") {
             dimension = "variant"
@@ -216,9 +212,9 @@ val adbPath = android.adbExecutable.absolutePath
 
 tasks.register<Exec>("deployA") {
     description = "Build and deploy SlopShell A"
-    dependsOn("assembleOssVersionADebug")
+    dependsOn("assembleVersionADebug")
     
-    val apk = "${layout.buildDirectory.get().asFile.absolutePath}/outputs/apk/ossVersionA/debug/app-oss-versionA-debug.apk"
+    val apk = "${layout.buildDirectory.get().asFile.absolutePath}/outputs/apk/versionA/debug/app-versionA-debug.apk"
     commandLine(adbPath, "install", "-r", apk)
     
     doFirst {
@@ -233,9 +229,9 @@ tasks.register<Exec>("deployA") {
 
 tasks.register<Exec>("deployB") {
     description = "Build and deploy SlopShell B"
-    dependsOn("assembleOssVersionBDebug")
+    dependsOn("assembleVersionBDebug")
     
-    val apk = "${layout.buildDirectory.get().asFile.absolutePath}/outputs/apk/ossVersionB/debug/app-oss-versionB-debug.apk"
+    val apk = "${layout.buildDirectory.get().asFile.absolutePath}/outputs/apk/versionB/debug/app-versionB-debug.apk"
     commandLine(adbPath, "install", "-r", apk)
     
     doFirst {
@@ -269,6 +265,15 @@ dependencies {
     implementation("org.connectbot:sshlib:2.2.23")
     implementation("org.conscrypt:conscrypt-android:2.5.3")
     
+    // Kotlin support
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.activity:activity-ktx:1.8.0")
+    
+    // Networking and JSON support for client
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("com.google.code.gson:gson:2.10.1")
+    
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
 
     implementation("androidx.annotation:annotation:1.9.1")
@@ -279,12 +284,7 @@ dependencies {
     
     implementation("com.google.android.material:material:1.12.0")
 
-    val googleImplementation by configurations
-    googleImplementation("com.google.android.gms:play-services-base:18.5.0") {
-        exclude(group = "androidx.fragment")
-    }
-
-    // Removed sshlib project dependency as it's not needed
+    // Removed Google Play Services - keeping OSS only
 
     androidTestImplementation("androidx.test:core:$testRunnerVersion")
     androidTestImplementation("androidx.test:runner:$testRunnerVersion")

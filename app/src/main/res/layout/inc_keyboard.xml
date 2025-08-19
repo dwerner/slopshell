@@ -55,6 +55,18 @@
 				android:contentDescription="@string/image_description_send_escape_character"
 				android:text="@string/button_key_esc" />
 
+			<Button
+				android:id="@+id/button_mode"
+				style="@style/KeyboardButton"
+				android:contentDescription="Send Shift+Tab (Mode switch)"
+				android:text="Mode" />
+
+			<Button
+				android:id="@+id/button_ctrlr"
+				style="@style/KeyboardButton"
+				android:contentDescription="Send Ctrl+R (Claude shortcut)"
+				android:text="^R" />
+
 			<ImageView
 				android:id="@+id/button_tab"
 				style="@style/KeyboardButton"
