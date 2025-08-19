@@ -330,17 +330,60 @@ class GitMonitorServer : CliktCommand() {
                     send("Connected to Git Monitor WebSocket")
                     
                     // Send file watch events
-                    launch {
+                    val fileWatchJob = launch {
                         for (event in fileWatchChannel) {
-                            send(com.google.gson.Gson().toJson(event))
+                            try {
+                                send(com.google.gson.Gson().toJson(event))
+                            } catch (e: Exception) {
+                                println("Error sending file event to $sessionId: ${e.message}")
+                            }
                         }
                     }
                     
-                    for (frame in incoming) {
-                        // Handle incoming messages if needed
+                    // Heartbeat sender - send ping every 20 seconds
+                    val heartbeatJob = launch {
+                        while (isActive) {
+                            delay(20000) // 20 seconds
+                            try {
+                                send("ping")
+                            } catch (e: Exception) {
+                                println("Heartbeat failed for $sessionId: ${e.message}")
+                                cancel() // Stop heartbeat if send fails
+                            }
+                        }
                     }
+                    
+                    // Handle incoming messages
+                    for (frame in incoming) {
+                        when (frame) {
+                            is Frame.Text -> {
+                                val text = frame.readText()
+                                when (text) {
+                                    "pong" -> {
+                                        // Client responded to ping
+                                        println("Received pong from $sessionId")
+                                    }
+                                    "ping" -> {
+                                        // Client sent ping, respond with pong
+                                        send("pong")
+                                    }
+                                    else -> {
+                                        println("Received message from $sessionId: $text")
+                                    }
+                                }
+                            }
+                            else -> {}
+                        }
+                    }
+                    
+                    // Cancel jobs when done
+                    fileWatchJob.cancel()
+                    heartbeatJob.cancel()
+                } catch (e: Exception) {
+                    println("WebSocket error for $sessionId: ${e.message}")
                 } finally {
                     webSocketConnections.remove(sessionId)
+                    println("WebSocket connection closed: $sessionId")
                 }
             }
         }
