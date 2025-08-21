@@ -61,7 +61,7 @@ data class StageRequest(val files: List<String>)
 data class CommitRequest(val message: String)
 
 class GitMonitorServer : CliktCommand() {
-    private val port by option("--port", "-p", help = "Server port").int().default(8080)
+    private val port by option("--port", "-p", help = "Server port").int().default(9090)
     private val repoPath by option("--repo", "-r", help = "Git repository path").default(".")
     private val host by option("--host", "-h", help = "Host to bind to").default("0.0.0.0")
     
@@ -404,8 +404,14 @@ class GitMonitorServer : CliktCommand() {
                 
                 when {
                     status == "??" -> untracked.add(file)
-                    status.getOrNull(0) != ' ' -> staged.add(FileChange(status[0].toString(), file))
-                    status.getOrNull(1) != ' ' -> unstaged.add(FileChange(status[1].toString(), file))
+                    status.getOrNull(0) != ' ' && status.getOrNull(0) != '?' -> {
+                        // File has staged changes - send full status
+                        staged.add(FileChange(status, file))
+                    }
+                    status.getOrNull(1) != ' ' && status.getOrNull(1) != '?' -> {
+                        // File has unstaged changes - send full status
+                        unstaged.add(FileChange(status, file))
+                    }
                 }
             }
         }

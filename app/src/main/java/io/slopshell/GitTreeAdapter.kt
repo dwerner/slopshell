@@ -101,7 +101,7 @@ class GitTreeAdapter(
     
     override fun getItemCount() = items.size
     
-    private fun toggleDirectory(path: String) {
+    fun toggleDirectory(path: String) {
         if (expandedDirs.contains(path)) {
             expandedDirs.remove(path)
         } else {
@@ -143,18 +143,24 @@ class GitTreeAdapter(
         
         fun bind(item: TreeItem.FileItem, isRecent: Boolean) {
             nameText.text = item.name
-            statusText.text = when {
-                item.status.startsWith("S:") -> "S"
-                item.status == "??" -> "?"
-                item.status.startsWith("M:") -> "M"
-                else -> item.status.take(1)
+            // Show both status positions like lazygit
+            statusText.text = if (item.status.length == 2) {
+                item.status  // Show full two-character status
+            } else if (item.status == "??") {
+                "??"
+            } else {
+                item.status
             }
             
-            // Set status color
+            // Set status color based on status
+            // First char = staged, Second char = unstaged
             val statusColor = when {
-                item.status.startsWith("S:") -> Color.parseColor("#4CAF50") // Green for staged
                 item.status == "??" -> Color.parseColor("#9E9E9E") // Gray for untracked
-                item.status.startsWith("M:") -> Color.parseColor("#FF9800") // Orange for modified
+                item.status[0] != ' ' -> Color.parseColor("#4CAF50") // Green for staged (any staged status)
+                item.status.endsWith("M") -> Color.parseColor("#FF9800") // Orange for modified unstaged
+                item.status.endsWith("D") -> Color.parseColor("#F44336") // Red for deleted unstaged
+                item.status.endsWith("A") -> Color.parseColor("#2196F3") // Blue for added unstaged
+                item.status.endsWith("R") -> Color.parseColor("#9C27B0") // Purple for renamed
                 else -> Color.parseColor("#757575")
             }
             statusText.setTextColor(statusColor)

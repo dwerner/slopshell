@@ -52,5 +52,8 @@
 	<color name="dark_primary_orange">#F57C00</color>
 	<color name="accent_orange">#FFAB40</color>
 	<color name="dark_accent_orange">#FF6D00</color>
+	
+	<!-- Tab Layout -->
+	<color name="tab_text_unselected">#B3FFFFFF</color>
 
 </resources>

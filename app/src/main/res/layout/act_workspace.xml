@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/Theme.AppCompat.Light" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="?attr/colorPrimary"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@android:color/white"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabTextColor="@color/tab_text_unselected"
+            app:tabIndicatorHeight="2dp"
+            app:tabPaddingTop="8dp"
+            app:tabPaddingBottom="8dp" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <!-- FAB Menu Container -->
+    <LinearLayout
+        android:id="@+id/fab_menu_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_margin="16dp">
+        
+        <!-- FAB Menu Items (initially hidden) -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_escape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:contentDescription="Send Escape"
+            android:visibility="gone"
+            app:fabSize="mini"
+            app:backgroundTint="@android:color/holo_red_dark" />
+        
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:contentDescription="Voice Input"
+            android:visibility="gone"
+            app:fabSize="mini" />
+        
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_paste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_action_paste"
+            android:contentDescription="Paste"
+            android:visibility="gone"
+            app:fabSize="mini" />
+            
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_disconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:contentDescription="Disconnect"
+            android:visibility="gone"
+            app:fabSize="mini" />
+        
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_keyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:src="@android:drawable/ic_menu_edit"
+            android:contentDescription="Toggle Keyboard"
+            android:visibility="gone"
+            app:fabSize="mini" />
+        
+        <!-- Main FAB (always visible) -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_menu"
+            app:backgroundTint="?attr/colorPrimary" />
+            
+    </LinearLayout>
+    
+    <!-- Voice Recording Indicator -->
+    <LinearLayout
+        android:id="@+id/voice_recording_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rounded_form_background"
+        android:elevation="12dp"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+        
+        <!-- Recording indicator -->
+        <View
+            android:id="@+id/recording_dot"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:background="@android:color/holo_red_dark"
+            android:layout_marginEnd="12dp" />
+            
+        <TextView
+            android:id="@+id/recording_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Listening..."
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+            
+        <!-- Cancel button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/voice_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:text="Cancel"
+            android:textSize="12sp"
+            app:cornerRadius="20dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            
+        <!-- Send with Enter button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/voice_enter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Send ↵"
+            android:textSize="12sp"
+            app:cornerRadius="20dp"
+            style="@style/Widget.MaterialComponents.Button" />
+            
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

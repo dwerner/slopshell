@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <!-- Terminal-specific actions -->
+    <item
+        android:id="@+id/menu_disconnect"
+        android:title="@string/list_host_disconnect"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:alphabeticShortcut="w"
+        app:showAsAction="never" />
+    
+    <item
+        android:id="@+id/menu_paste"
+        android:title="@string/console_menu_paste"
+        android:icon="@drawable/ic_action_paste"
+        android:alphabeticShortcut="v"
+        app:showAsAction="ifRoom" />
+        
+    <item
+        android:id="@+id/menu_port_forwards"
+        android:title="@string/console_menu_portforwards"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:alphabeticShortcut="f"
+        app:showAsAction="never" />
+    
+    <item
+        android:id="@+id/menu_url_scan"
+        android:title="@string/console_menu_urlscan"
+        android:icon="@android:drawable/ic_menu_search"
+        android:alphabeticShortcut="u"
+        app:showAsAction="never" />
+        
+    <item
+        android:id="@+id/menu_resize"
+        android:title="@string/console_menu_resize"
+        android:icon="@android:drawable/ic_menu_crop"
+        android:alphabeticShortcut="s"
+        app:showAsAction="never" />
+        
+    <item
+        android:id="@+id/menu_text_selection"
+        android:title="@string/console_menu_text_selection"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:alphabeticShortcut="t"
+        android:checkable="true"
+        app:showAsAction="never" />
+        
+    <item
+        android:id="@+id/menu_rotation"
+        android:title="@string/console_menu_rotation"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:alphabeticShortcut="r"
+        app:showAsAction="never" />
+    
+    <!-- General settings -->
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/title_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        app:showAsAction="never" />
+        
+</menu>

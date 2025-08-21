@@ -20,6 +20,7 @@ package io.slopshell.service;
 import io.slopshell.ConsoleActivity;
 import io.slopshell.HostListActivity;
 import io.slopshell.R;
+import io.slopshell.WorkspaceActivity;
 import io.slopshell.bean.HostBean;
 import io.slopshell.util.HostDatabase;
 
@@ -98,9 +99,12 @@ public class ConnectionNotifier {
 		String contentText = res.getString(
 				R.string.notification_text, host.getNickname());
 
-		Intent notificationIntent = new Intent(context, ConsoleActivity.class);
+		// Use WorkspaceActivity instead of ConsoleActivity for better integration with fragments
+		Intent notificationIntent = new Intent(context, WorkspaceActivity.class);
 		notificationIntent.setAction("android.intent.action.VIEW");
 		notificationIntent.setData(host.getUri());
+		// Add the URI as an extra for WorkspaceActivity to handle
+		notificationIntent.putExtra("uri", host.getUri().toString());
 
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, pendingIntentFlags);
 
@@ -129,9 +133,10 @@ public class ConnectionNotifier {
 		NotificationCompat.Builder builder = newNotificationBuilder(context, NOTIFICATION_CHANNEL);
 
 		Resources res = context.getResources();
+		// Use WorkspaceActivity for consistent navigation
 		PendingIntent pendingIntent = PendingIntent.getActivity(context,
 				ONLINE_NOTIFICATION,
-				new Intent(context, ConsoleActivity.class),
+				new Intent(context, WorkspaceActivity.class),
 				pendingIntentFlags);
 
 		Intent disconnectIntent = new Intent(context, HostListActivity.class);

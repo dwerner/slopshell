@@ -371,6 +371,60 @@ public class TerminalBridge implements VDUDisplay {
 	}
 
 	/**
+	 * Write a single byte to the transport on a background thread.
+	 * Prevents NetworkOnMainThreadException.
+	 */
+	public void writeByte(final int b) {
+		// Check if transport is still connected before trying to write
+		if (transport == null || !transport.isConnected()) {
+			Log.w(TAG, "Cannot write byte - transport is not connected");
+			return;
+		}
+		
+		Thread writeThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					if (transport != null && transport.isConnected()) {
+						transport.write(b);
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "Couldn't write byte to remote host: ", e);
+				}
+			}
+		});
+		writeThread.setName("WriteByte");
+		writeThread.start();
+	}
+	
+	/**
+	 * Write bytes to the transport on a background thread.
+	 * Prevents NetworkOnMainThreadException.
+	 */
+	public void writeBytes(final byte[] bytes) {
+		// Check if transport is still connected before trying to write
+		if (transport == null || !transport.isConnected()) {
+			Log.w(TAG, "Cannot write bytes - transport is not connected");
+			return;
+		}
+		
+		Thread writeThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					if (transport != null && transport.isConnected()) {
+						transport.write(bytes);
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "Couldn't write bytes to remote host: ", e);
+				}
+			}
+		});
+		writeThread.setName("WriteBytes");
+		writeThread.start();
+	}
+	
+	/**
 	 * Inject a specific string into this terminal. Used for post-login strings
 	 * and pasting clipboard.
 	 */
@@ -378,11 +432,22 @@ public class TerminalBridge implements VDUDisplay {
 		if (string == null || string.length() == 0)
 			return;
 
+		// Check if transport is still connected before trying to write
+		if (transport == null || !transport.isConnected()) {
+			Log.w(TAG, "Cannot inject string - transport is not connected");
+			return;
+		}
+
 		Thread injectStringThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					transport.write(string.getBytes(host.getEncoding()));
+					// Double-check connection inside the thread
+					if (transport != null && transport.isConnected()) {
+						transport.write(string.getBytes(host.getEncoding()));
+					} else {
+						Log.w(TAG, "Transport disconnected before injection could complete");
+					}
 				} catch (Exception e) {
 					Log.e(TAG, "Couldn't inject string to remote host: ", e);
 				}

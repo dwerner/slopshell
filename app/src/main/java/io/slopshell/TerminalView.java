@@ -632,6 +632,19 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 		// Use false to avoid text composition issues
 		return new BaseInputConnection(this, false) {
 			@Override
+			public boolean commitText(CharSequence text, int newCursorPosition) {
+				// Handle voice input and other IME text input
+				if (text != null && text.length() > 0) {
+					// Send the text to the terminal
+					if (bridge != null && !bridge.isDisconnected()) {
+						bridge.injectString(text.toString());
+						return true;
+					}
+				}
+				return super.commitText(text, newCursorPosition);
+			}
+			
+			@Override
 			public boolean deleteSurroundingText (int leftLength, int rightLength) {
 				if (rightLength == 0 && leftLength == 0) {
 					return this.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));

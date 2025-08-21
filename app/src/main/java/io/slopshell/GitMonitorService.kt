@@ -302,9 +302,10 @@ class GitMonitorService : Service() {
                             return@launch
                         }
                         
-                        // Try to parse as FileWatchEvent
-                        val event = gson.fromJson(text, FileWatchEvent::class.java)
-                        fileChangeCallback?.invoke(event)
+                        // Try to parse as FileWatchEvent - temporarily disabled due to JNI issues
+                        // TODO: Fix FileWatchEvent deserialization
+                        // val event = gson.fromJson(text, FileWatchEvent::class.java)
+                        // fileChangeCallback?.invoke(event)
                         
                         // Auto-refresh status when files change
                         serviceScope.launch(Dispatchers.IO) {

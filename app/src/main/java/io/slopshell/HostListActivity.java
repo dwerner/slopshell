@@ -342,7 +342,9 @@ public class HostListActivity extends AppCompatListActivity implements OnHostSta
 
 		MenuItem gitMonitor = menu.add("Git Monitor");
 		gitMonitor.setIcon(android.R.drawable.ic_menu_recent_history);
-		gitMonitor.setIntent(new Intent(HostListActivity.this, GitMonitorActivity.class));
+		Intent gitMonitorIntent = new Intent(HostListActivity.this, WorkspaceActivity.class);
+		gitMonitorIntent.putExtra(WorkspaceActivity.EXTRA_OPEN_TAB, WorkspaceActivity.TAB_GIT_MONITOR);
+		gitMonitor.setIntent(gitMonitorIntent);
 
 		disconnectall = menu.add(R.string.list_menu_disconnect);
 		disconnectall.setIcon(android.R.drawable.ic_menu_delete);
@@ -416,8 +418,9 @@ public class HostListActivity extends AppCompatListActivity implements OnHostSta
 			hostdb.saveHost(host);
 		}
 
-		Intent intent = new Intent(HostListActivity.this, ConsoleActivity.class);
+		Intent intent = new Intent(HostListActivity.this, WorkspaceActivity.class);
 		intent.setData(uri);
+		intent.putExtra(WorkspaceActivity.EXTRA_OPEN_TAB, WorkspaceActivity.TAB_TERMINAL);
 		startActivity(intent);
 
 		return true;
@@ -495,7 +498,8 @@ public class HostListActivity extends AppCompatListActivity implements OnHostSta
 
 				// runnable to run after notification permission is asked
 				startConsoleRunnable = () -> {
-					contents.setClass(HostListActivity.this, ConsoleActivity.class);
+					contents.setClass(HostListActivity.this, WorkspaceActivity.class);
+					contents.putExtra(WorkspaceActivity.EXTRA_OPEN_TAB, WorkspaceActivity.TAB_TERMINAL);
 					HostListActivity.this.startActivity(contents);
 					startConsoleRunnable = null;
 				};

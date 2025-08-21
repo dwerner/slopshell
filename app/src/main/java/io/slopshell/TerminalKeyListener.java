@@ -152,24 +152,24 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 					if (keyCode == KeyEvent.KEYCODE_ALT_RIGHT
 							&& (ourMetaState & OUR_SLASH) != 0) {
 						ourMetaState &= ~OUR_TRANSIENT;
-						bridge.transport.write('/');
+						bridge.writeByte('/');
 						return true;
 					} else if (keyCode == KeyEvent.KEYCODE_SHIFT_RIGHT
 							&& (ourMetaState & OUR_TAB) != 0) {
 						ourMetaState &= ~OUR_TRANSIENT;
-						bridge.transport.write(0x09);
+						bridge.writeByte(0x09);
 						return true;
 					}
 				} else if (leftModifiersAreSlashAndTab) {
 					if (keyCode == KeyEvent.KEYCODE_ALT_LEFT
 							&& (ourMetaState & OUR_SLASH) != 0) {
 						ourMetaState &= ~OUR_TRANSIENT;
-						bridge.transport.write('/');
+						bridge.writeByte('/');
 						return true;
 					} else if (keyCode == KeyEvent.KEYCODE_SHIFT_LEFT
 							&& (ourMetaState & OUR_TAB) != 0) {
 						ourMetaState &= ~OUR_TRANSIENT;
-						bridge.transport.write(0x09);
+						bridge.writeByte(0x09);
 						return true;
 					}
 				}
@@ -192,8 +192,11 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 			// Handle potentially multi-character IME input.
 			if (keyCode == KeyEvent.KEYCODE_UNKNOWN &&
 					event.getAction() == KeyEvent.ACTION_MULTIPLE) {
-				byte[] input = event.getCharacters().getBytes(encoding);
-				bridge.transport.write(input);
+				// Use injectString to handle the write on a background thread
+				String characters = event.getCharacters();
+				if (characters != null) {
+					bridge.injectString(characters);
+				}
 				return true;
 			}
 
@@ -363,10 +366,10 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 				if ((derivedMetaState & KeyEvent.META_ALT_ON) != 0)
 					sendEscape();
 				if (uchar < 0x80)
-					bridge.transport.write(uchar);
+					bridge.writeByte(uchar);
 				else
 					// TODO write encoding routine that doesn't allocate each time
-					bridge.transport.write(new String(Character.toChars(uchar))
+					bridge.writeBytes(new String(Character.toChars(uchar))
 							.getBytes(encoding));
 				return true;
 			}
@@ -377,7 +380,7 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 				sendEscape();
 				return true;
 			case KeyEvent.KEYCODE_TAB:
-				bridge.transport.write(0x09);
+				bridge.writeByte(0x09);
 				return true;
 			case KeyEvent.KEYCODE_CAMERA:
 
@@ -386,15 +389,15 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 						PreferenceConstants.CAMERA,
 						PreferenceConstants.CAMERA_CTRLA_SPACE);
 				if (PreferenceConstants.CAMERA_CTRLA_SPACE.equals(camera)) {
-					bridge.transport.write(0x01);
-					bridge.transport.write(' ');
+					bridge.writeByte(0x01);
+					bridge.writeByte(' ');
 				} else if (PreferenceConstants.CAMERA_CTRLA.equals(camera)) {
-					bridge.transport.write(0x01);
+					bridge.writeByte(0x01);
 				} else if (PreferenceConstants.CAMERA_ESC.equals(camera)) {
 					((vt320) buffer).keyTyped(vt320.KEY_ESCAPE, ' ', 0);
 				} else if (PreferenceConstants.CAMERA_ESC_A.equals(camera)) {
 					((vt320) buffer).keyTyped(vt320.KEY_ESCAPE, ' ', 0);
-					bridge.transport.write('a');
+					bridge.writeByte('a');
 				}
 
 				break;
@@ -514,47 +517,17 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 	}
 
 	public void sendTab() {
-		try {
-			bridge.transport.write(0x09);
-		} catch (IOException e) {
-			Log.e(TAG, "Problem while trying to send TAB press.", e);
-			try {
-				bridge.transport.flush();
-			} catch (IOException ioe) {
-				Log.d(TAG, "Our transport was closed, dispatching disconnect event");
-				bridge.dispatchDisconnect(false);
-			}
-		}
+		bridge.writeByte(0x09);
 	}
 
 	public void sendShiftTab() {
-		try {
-			// Send the escape sequence for Shift+Tab (CSI Z)
-			bridge.transport.write(new byte[] { 0x1B, '[', 'Z' });
-		} catch (IOException e) {
-			Log.e(TAG, "Problem while trying to send SHIFT+TAB press.", e);
-			try {
-				bridge.transport.flush();
-			} catch (IOException ioe) {
-				Log.d(TAG, "Our transport was closed, dispatching disconnect event");
-				bridge.dispatchDisconnect(false);
-			}
-		}
+		// Send the escape sequence for Shift+Tab (CSI Z)
+		bridge.writeBytes(new byte[] { 0x1B, '[', 'Z' });
 	}
 
 	public void sendCtrlR() {
-		try {
-			// Send Ctrl+R (ASCII 18)
-			bridge.transport.write(0x12);
-		} catch (IOException e) {
-			Log.e(TAG, "Problem while trying to send CTRL+R press.", e);
-			try {
-				bridge.transport.flush();
-			} catch (IOException ioe) {
-				Log.d(TAG, "Our transport was closed, dispatching disconnect event");
-				bridge.dispatchDisconnect(false);
-			}
-		}
+		// Send Ctrl+R (ASCII 18)
+		bridge.writeByte(0x12);
 	}
 
 	public void sendPressedKey(int key) {

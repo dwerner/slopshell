@@ -1,7 +1,5 @@
 # SlopShell 🍲
 
-*Once upon a time, this was ConnectBot - a respectable SSH client for Android. Now? It's SlopShell, because sometimes you need to embrace the chaos.*
-
 ## What is this?
 
 SlopShell is what happens when you take a perfectly good SSH client and turn it into a playground for half-baked ideas about Android-based Claude AI interactions. It's not pretty, it's not production-ready, but it's *interesting*.
@@ -42,9 +40,9 @@ cd git-monitor-server
 ./gradlew build
 ```
 
-## Why "SlopShell"?
+It's called SlopShell because we're interacting with AI, and so much of what AI produces (yes, including Claude) is slop. Half-baked solutions, over-engineered simple problems, code that works but you're not quite sure why, and architectural decisions that would make any senior developer weep. 
 
-Because this is where perfectly good code comes to get experimental. It's the coding equivalent of throwing everything in a pot and seeing what happens. Sometimes you get a delicious stew, sometimes you get... well, slop.
+This is the designated slop zone - where AI-generated experiments live, breathe, and occasionally catch fire. It's not about perfection; it's about seeing what happens when you let an AI loose on an Android SSH client.
 
 ## Original ConnectBot Heritage
 
